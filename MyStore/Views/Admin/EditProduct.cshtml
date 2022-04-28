@@ -1,0 +1,271 @@
+﻿@model EditProductBindingModel
+@{
+    Layout = "_LayoutAdmin";
+}
+
+
+<div class="imagesInAdmin">
+
+    @{ if ((@Model.ColoredProduct.Images == null) || (@Model.ColoredProduct.Images.Count == 0))
+        {
+        <div class="imageInAdmin">
+            <img src="~/css/theme1/noimg.png" class="photoInCatalog" alt="noImg" />
+        </div>
+        }
+        else
+        {
+
+            @foreach (var image in Model.ColoredProduct.Images)
+            {
+                if (@image.ImageBody != null)
+                {
+                    <div class="imageInAdmin">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(@image.ImageBody)" alt="FileName" />
+
+                        <p>FileName.&nbsp;&nbsp;
+                            <a class="decorDel" asp-controller="admin" asp-action="DeleteImage" asp-route-ProductId=@image.ProductId asp-route-ColorId=@image.ColorId asp-route-ImageId=@image.ImageId >
+                            Удалить
+                            </a>
+                        </p>
+                        <br>
+                    </div>
+                }
+                
+            }
+        }
+    }
+
+</div>
+
+    <div class="pp1">
+        <div>
+            <h3>Редактирование товара с ProductId @Model.ColoredProduct.ProductId, ColorId @Model.ColoredProduct.ColorId</h3>
+
+
+            <p style="color: red;" align="right"><b>@Model.InputMessage</b></p>
+
+
+            @*НАЗВАНИЕ ТОВАРА*@
+        <form asp-action="EditProductName" asp-controller="Admin" method="post">
+
+            <label asp-for="ProductName"> </label>
+            <input asp-for="ProductName" name="productName" class="fieldProductName" />
+
+            <input asp-for="ProductId" /> @*скрытые свойства*@
+            <input asp-for="ColorId" />
+            <input type="submit" value="Сохранить" />
+        </form>
+
+
+            <table width="730px">
+
+                <tr>
+                    <td width="920px" align="right" colspan="2">
+                        @*Изображения*@
+                        <form asp-action="EditProduct" asp-controller="Admin" method="post" enctype="multipart/form-data" class="formProduct">
+
+                            <label asp-for="Files">  </label>
+
+                            <input asp-for="Files" multiple /> 
+
+                            <input asp-for="ProductId" />
+                            <input asp-for="ColorId" />
+
+                            <input type="submit" value="Загрузить" />
+                            <br />
+                            <span asp-validation-for="Files" class="text-danger"></span>
+                            <br />
+                        </form>
+                        
+                    </td>
+                </tr>
+                <br>
+
+                <tr>
+                    <td width="460px" align="right">
+                        @*Код товара*@
+                        <form asp-action="EditProductCode" asp-controller="Admin" method="post" class="formProduct">
+
+                            <label asp-for="ProductCode"> </label>
+                            <input asp-for="ProductCode" name="productCode" class="fieldProduct" />
+
+                            <input asp-for="ProductId" />
+                            <input asp-for="ColorId" />
+                            <input type="submit" value="Сохранить" />
+                        </form>
+                        <br />
+                    </td>
+                    <td width="460px" align="right">
+                        @*Цена*@
+
+                        <form asp-action="EditPrice" asp-controller="Admin" method="post" class="formProduct">
+
+                            <label asp-for="Price"> </label>
+                            <input asp-for="Price" name="price" class="fieldProduct" />
+
+                            <input asp-for="ProductId" />
+                            <input asp-for="ColorId" />
+                            <input type="submit" value="Сохранить" />
+                        </form>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="460px" align="right">
+
+                        @*Показывать на сайте*@
+                        <form asp-action="EditShowProduct" asp-controller="Admin" method="post" class="formProduct">
+
+                            <label asp-for="ShowProduct"> @*@Model.ColoredProduct.ShowProduct*@</label>
+                            <input asp-for="ShowProduct" name="showProduct" />
+
+                            <input asp-for="ProductId" />
+                            <input asp-for="ColorId" />
+                            <input type="submit" value="Сохранить" />
+                        </form>
+                        <br />
+                    </td>
+                    <td width="460px" align="right">
+                        @*Остаток на складе*@
+                        <form asp-action="EditStock" asp-controller="Admin" method="post" class="formProduct">
+
+                            <label asp-for="Stock"> </label>
+                            <input asp-for="Stock" name="stock" class="fieldProduct" />
+
+                            <input asp-for="ProductId" />
+                            <input asp-for="ColorId" />
+                            <input type="submit" value="Сохранить" />
+                        </form>
+                        <br />
+                    </td>
+                </tr>
+
+
+            </table>
+
+
+
+
+
+            @*Описание*@
+            <form asp-action="EditDescription" asp-controller="Admin" method="post">
+
+                <label>Описание: </label>
+                <br />
+                <textarea asp-for="ColoredProduct.Product.Description" name="description" class="fieldDescription"></textarea>
+
+                <input asp-for="ProductId" />
+                <input asp-for="ColorId" />
+                <br />
+                <input type="submit" value="Сохранить" />
+            </form>
+            <br />
+
+
+
+            @{
+                if (@Model.Messages != null)
+                    @foreach (var message in @Model.Messages)
+                    {
+                        <p style="color: red;">@message</p>
+                    }
+            }
+
+
+
+            <form asp-action="EditProduct" asp-controller="Admin" method="post">
+
+                @{ // набор характеристик в выбранной категории
+                    var categoryCharacteristicList = @Model.ColoredProduct.Product.Category.CategoryCharacteristics.ToList();
+                }
+
+
+
+                <table class="table">
+                    <tr>
+                        <td style="width: 90px;"><p>Удалить выбранное значение</p></td>
+                        <td style="width: 240px;"><p>Добавить значение</p></td>
+                        <td style="width: 600px;"><p>Выбрать значение характеристики категории</p></td>
+                    </tr>
+
+                    @for (int i = 0; i < categoryCharacteristicList.Count; i++)@*Проход по характеристикам категории*@
+                    {
+                        /*@categoryCharacteristicList[i].CharacteristicValues
+                        Архитектурно -это список возможных значений характетистики,
+                        но по факту там одно значение с выбранным Id товара*/
+
+                        if (@categoryCharacteristicList[i].CharacteristicValues == null)
+                            continue;
+                        else
+                        {
+
+
+                            @foreach (var characteristic in @categoryCharacteristicList[i].CharacteristicValues)
+                            {
+
+
+                                <tr style="height: 45px;">
+
+                                    @*Удалить выбранное значение*@
+                                    <td style="width: 200px;">
+
+                                        <select class="fieldProduct"
+                                                name="toDeleteValueNames" asp-items="Model.OptionCharacteristicValuesList[i]">
+
+                                            <option style="color: gray" value="">--не выбрано--</option>
+                                        </select>
+
+
+                                        @*Запоминаем Id текущей характеристики в категории (используется для всех 3-х столбцов)*@
+                                        <input type="hidden" name="сategoryCharacteristicsIds" value=@characteristic.CategoryCharacteristicsId />
+                                    </td>
+
+                                    @*Добавить значение*@
+                                    <td style="width: 240px;">
+
+
+                                        <input type="text" name="inputValues" />
+
+                                    </td>
+                                    <td style="width: 450px;">
+                                        @categoryCharacteristicList[i].Characteristic.CharacteristicName  @*categoryCharacteristicList[i] 1-а характеристика в выбранной категории*@
+
+                                        @*Вывод разделителя*@
+                                        @{ for (int j = 0; j < (38 - categoryCharacteristicList[i].Characteristic.CharacteristicName.Length); j++)
+                                            {
+                                                <span> - </span>
+                                            }
+                                        }
+
+
+                                        <select class="fieldProduct" asp-for="@characteristic.Value.ValueName"
+                                                name="valueNames" asp-items="Model.OptionCharacteristicValuesList[i]"></select>
+
+                                    </td>
+                                </tr>
+
+
+                            }
+                            @*<select class="fieldProduct" asp-for="@categoryCharacteristicList[i].CharacteristicValues[0].Value.ValueName"
+                        name="colorName" asp-items="Model.OptionCharacteristicValuesList[i]"></select>*@
+
+
+                            //OptionsCharacteristicValues[i] - это список значений (типа CharacteristicValue) для текущей характеристики
+                            //OptionsCharacteristicValues[i].Value.ValueName это список значений (типа string) для текущей характеристики
+                        }
+
+                    }
+                </table>
+                <br />
+                <input asp-for="ProductId" />
+                <input asp-for="ColorId" />
+                <input type="submit" value="Сохранить" />
+                <br />
+
+            </form>
+        </div>
+
+
+    </div>
+
+

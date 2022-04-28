@@ -1,0 +1,107 @@
+﻿@model StoreLayoutBindingModel
+<p><h2>@Model.ColoredProduct.ProductName</h2></p>
+
+
+
+<div class="imagesInProduct">
+    
+        @{ if ((@Model.ColoredProduct.Images == null) || (@Model.ColoredProduct.Images.Count == 0))
+            {
+                <img src="~/css/theme1/noimg.png" class="photoInCatalog" alt="noImg" />
+            }
+            else
+            {
+
+                @foreach (var image in Model.ColoredProduct.Images)
+                {
+                    if (@image.ImageBody != null)
+                    {
+                       <div class="imageInProduct">
+                            <img src="data:image;base64,@System.Convert.ToBase64String(@image.ImageBody)" alt="FileName" />
+                       </div>
+                        
+                    }
+
+                }
+            }
+        }
+    
+</div>
+
+<div class="priceInProduct">
+
+    <p>Код: @Model.ColoredProduct.ProductCode</p>
+    <p><b>Цена: @Model.ColoredProduct.Price грн</b></p>
+    @*<p><a class="btn" asp-action="ModeratorPage" asp-controller="Account">Купить</a></p>*@
+
+    <p>
+        <input class="quantCart" id="idField" asp-for="@Model.ColoredProduct.CartQuantity" />
+        <input class="btn" type=button onclick="sendProductFormFromCard('@Model.ColoredProduct.ProductId', '@Model.ColoredProduct.ColorId', '@Model.ColoredProduct.Stock', '@Model.ColoredProduct.ProductName', '@Model.ColoredProduct.ProductCode', '@Model.ColoredProduct.Price')" value="Купить" />
+    </p>
+</div>
+
+<script>
+    function sendProductFormFromCard(productId, colorId, stock, name, code, price) {
+        let data = new FormData(); // создаем объект, содержащий данные формы
+        data.append("ColoredProduct.ProductId", productId); //Будет передаваться в модель в свойство типа ColoredProduct, в кот. есть св-во ProductId
+        data.append("ColoredProduct.ColorId", colorId);
+        data.append("ColoredProduct.Stock", stock);
+        data.append("ColoredProduct.ProductName", name);
+        data.append("ColoredProduct.CartQuantity", document.getElementById('idField').value);
+        data.append("ColoredProduct.ProductCode", code);
+        data.append("ColoredProduct.Price", price);
+
+        let xhr = new XMLHttpRequest();// создаем объект запроса
+        xhr.open("post", "AddToCart");
+
+        xhr.onload = () => {
+            // после загрузки ответа Response
+            // парсим тело JSON ответа
+            let response = JSON.parse(xhr.response);
+
+            alert(
+                response
+            );
+        }
+
+        xhr.send(data); // отправка данных формы, вместе с остальными данными запроса
+    }
+</script>
+
+<div class="1imageInProduct">
+    
+
+    
+    <p>@Model.ColoredProduct.Product.Description</p>
+
+
+    @* набор характеристик в выбранной категории - Model.Product.Category.CharacteristicsInCategories  System.Collections.Generic.HashSet`1[MyStore.CharacteristicsInCategory]*@
+    @foreach (var categoryCharacteristic in Model.ColoredProduct.Product.Category.CategoryCharacteristics)@*CategoryCharacteristics- это  имя коллекции в Category. Коллекция закрыта CategoryCharacteristic по э перебираем характеристики в категории.*@
+    {
+        //По архитектуре используется таблица значений, которая допускает наличие многих значений у одной характеристики в категории, по этому для доступа
+        //к значениям используем цикл (хотя он и предполагает выборку только одного значения),
+        // categoryCharacteristic - характеристика в выбранной категории
+
+        if (@categoryCharacteristic.CharacteristicValues == null)
+            continue;
+        else
+        {
+
+            foreach (var value in @categoryCharacteristic.CharacteristicValues)
+            {
+
+                <p> @categoryCharacteristic.Characteristic.CharacteristicName  -------   @value.Value.ValueName </p>
+            }
+
+
+            @*<p>
+                    @categoryCharacteristic.Characteristic.CharacteristicName  -------
+                    @categoryCharacteristic.CharacteristicValues[0].Value.Value1
+                </p>*@
+
+
+        }
+    }
+
+</div>
+

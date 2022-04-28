@@ -1,0 +1,111 @@
+﻿@model StoreLayoutBindingModel;
+
+<h3>Корзина</h3>
+
+@{
+    if (Model != null)
+    {
+
+    <form asp-controller="store" asp-action="CartForm" method="post">
+
+        <div>
+
+            <label asp-for="@Model.Client.Name"></label>
+            <input asp-for="@Model.Client.Name" />
+            <span asp-validation-for="@Model.Client.Name" class="text-danger"></span>
+            &nbsp;&nbsp;
+
+            <label asp-for="@Model.Client.Phone"></label>
+            <input asp-for="@Model.Client.Phone" />
+            <span asp-validation-for="@Model.Client.Phone" class="text-danger"></span>
+
+        </div>
+        <br />
+
+        @if ( (@Model.Client != null) && (@Model.Client.Order != null) @*&& (@Model.Client.Order.DeliveryType != null)*@ )
+        {
+            <div>
+
+                <label asp-for="@Model.Client.Order.DeliveryType.DeliveryTypeName"></label>&nbsp;&nbsp;
+                @*<input asp-for="@Model.Client.Order.DeliveryType.DeliveryTypeName" />*@
+                <select asp-for="@Model.Client.Order.DeliveryType.DeliveryTypeName" asp-items="Model.DeliveryTypesModel.DeliveryTypeNameOptions" ></select>
+                <span asp-validation-for="@Model.Client.Order.DeliveryType.DeliveryTypeName" class="text-danger"></span>
+                <br />
+                <br />
+
+                <label asp-for="@Model.Client.Order.Comment"></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <textarea cols="20" asp-for="@Model.Client.Order.Comment"> </textarea>
+            </div>
+            <br />
+            <br />
+
+
+
+            @if ((Model.Client.Order.Purchases != null) && (Model.Client.Order.Purchases.Count != 0))
+            {
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>№ позиции</td>
+                            <td>Код товара</td>
+                            <td style="width: 40%;">Наименование</td>
+                            <td>Цена, грн</td>
+                            <td>Количество</td>
+
+                        </tr>
+
+
+                        @{
+                            var purchases = Model.Client.Order.Purchases;
+                            for (int i = 0; i < purchases.Count; i++)
+                            {
+                                <tr>
+                                    @{
+                                        if (purchases[i].ColoredProduct != null)
+                                        {
+                                            int j = i + 1;
+                                            <td>@j</td>
+                                            <td>
+                                                @Model.Client.Order.Purchases[i].ColoredProduct.ProductCode
+                                                @*<input asp-for="@Model.StoreClient.StoreOrder.StorePurchases[i].StoreColoredProduct.ProductCode" />*@  @*Чтоб это работало, надо создать другие классы с теми же свойствами и на нужных свойствах поставить UIHint*@
+                                                <input type="hidden" name="Client.Order.Purchases[@i].ColoredProduct.ProductCode" value=@Model.Client.Order.Purchases[i].ColoredProduct.ProductCode />
+                                            </td>
+                                            <td style="width: 40%;">
+                                                @Model.Client.Order.Purchases[i].ColoredProduct.ProductName
+                                                @*<input asp-for="@Model.Client.Order.Purchases[i].ColoredProduct.ProductName" />*@
+                                                <input type="hidden" name="Client.Order.Purchases[@i].ColoredProduct.ProductName" value="@Model.Client.Order.Purchases[i].ColoredProduct.ProductName" />
+                                            </td>
+                                            <td>
+                                                @Model.Client.Order.Purchases[i].ColoredProduct.Price
+                                                @*<input asp-for="@Model.Client.Order.Purchases[i].ColoredProduct.Price" />*@
+                                                <input type="hidden" name="Client.Order.Purchases[@i].ColoredProduct.Price" value="@Model.Client.Order.Purchases[i].ColoredProduct.Price" />
+                                            </td>
+                                            <td>
+                                                <input asp-for="@Model.Client.Order.Purchases[i].Quantity" />
+
+                                                <input asp-for="@Model.Client.Order.Purchases[i].ProductId" /> @*Скрытые поля*@
+                                                <input asp-for="@Model.Client.Order.Purchases[i].ColorId" />
+                                                <input asp-for="@Model.Client.Order.Purchases[i].ProductId" />
+                                            </td> 
+                                        }
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+         <div class="summ">
+             <p>Общая сумма  @Model.Client.Order.Summ грн</p>
+         </div>
+            
+        }
+        <br />
+
+        <button class="btn" type="submit">Сохранить изменения</button>
+    </form>
+        <p ><a class="btn" asp-controller="store" asp-action="SendCartForm">Оформить покупку</a></p>
+        
+
+    }
+}

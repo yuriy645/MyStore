@@ -1,0 +1,89 @@
+﻿@model StoreLayoutBindingModel
+
+@{
+var coloredProducts = @Model.ColoredProducts;
+
+if (coloredProducts != null)
+{
+    @if (coloredProducts.Count != 0)
+    {
+        @for (int i = 0; i < coloredProducts.Count; i++)
+        {
+           <div class="productInCatalog">
+           
+               <div class="decorNameDiv">
+                   <p><a class="decorName" asp-controller="store" asp-action="Product" asp-route-ProductId=@coloredProducts[i].ProductId asp-route-ColorId=@coloredProducts[i].ColorId><h3>@coloredProducts[i].ProductName</h3></a></p>
+               </div>
+               
+           
+               <p>
+                   
+                   <div class="photoframeInCatalog">
+                        @{if (@coloredProducts[i].ImgResized != null)
+                           {
+                               <a asp-controller="store" asp-action="Product" asp-route-ProductId=@coloredProducts[i].ProductId asp-route-ColorId=@coloredProducts[i].ColorId>
+                                   <img src="data:image;base64,@System.Convert.ToBase64String(@coloredProducts[i].ImgResized)" class="photoInCatalog" alt="FileName" />
+                               </a>
+
+                           }
+                           else
+                           {
+                               <a asp-controller="store" asp-action="Product" asp-route-ProductId=@coloredProducts[i].ProductId asp-route-ColorId=@coloredProducts[i].ColorId>
+                                   <img src="~/css/theme1/noimg.png" class="photoInCatalog" alt="noImg" />
+                               </a>
+
+                           }
+                       }
+                   </div>
+           
+                   
+               </p>
+           
+               <p class="decorText">Описание:</p>
+               <p><a class="decorText" asp-controller="store" asp-action="Product" asp-route-ProductId=@coloredProducts[i].ProductId asp-route-ColorId=@coloredProducts[i].ColorId>@coloredProducts[i].Product.Description.PadRight(200).Substring(0, 200) ...</a></p>
+               <div>
+                  
+                   @{
+                       string idField = "quantityField" + i.ToString();
+                    }
+                   <input class="quantCart" id="@idField" asp-for="@coloredProducts[i].CartQuantity" />
+                   <input class="btn" type=button onclick="sendProductForm('@coloredProducts[i].ProductId', '@coloredProducts[i].ColorId', '@coloredProducts[i].Stock', '@coloredProducts[i].ProductName', '@coloredProducts[i].ProductCode', '@coloredProducts[i].Price', '@i')" value="Купить" />
+
+               </div>
+           </div> 
+         }
+    }
+    else
+    { 
+    <h3>Товаров нет в категории.</h3>
+    }
+}
+}
+
+<script>
+    function sendProductForm(productId, colorId, stock, name, code, price, iNumber) {
+        let data = new FormData(); // создаем объект, содержащий данные формы
+        data.append("ColoredProduct.ProductId", productId); //Будет передаваться в модель в свойство типа ColoredProduct, в кот. есть св-во ProductId
+        data.append("ColoredProduct.ColorId", colorId);
+        data.append("ColoredProduct.Stock", stock);
+        data.append("ColoredProduct.ProductName", name);
+        data.append("ColoredProduct.CartQuantity", document.getElementById('quantityField' + iNumber).value);
+        data.append("ColoredProduct.ProductCode", code);
+        data.append("ColoredProduct.Price", price);
+
+        let xhr = new XMLHttpRequest();// создаем объект запроса
+        xhr.open("post", "AddToCart");
+
+        xhr.onload = () => {
+            // после загрузки ответа Response
+            // парсим тело JSON ответа
+            let response = JSON.parse(xhr.response);
+
+            alert(
+                response
+            );
+        }
+
+        xhr.send(data); // отправка данных формы, вместе с остальными данными запроса
+    }
+</script>

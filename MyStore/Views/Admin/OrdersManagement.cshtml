@@ -1,0 +1,192 @@
+﻿
+@model OrderManagementBindingModel
+@{
+    Layout = "_LayoutAdmin";
+}
+<h3>Управление заказами</h3>
+
+<form asp-controller="admin" asp-action="OrdersManagement" method="post">
+    <label asp-for="@Model.ShowAllOrders"></label>
+    <input asp-for="@Model.ShowAllOrders" />
+    <input type="submit" value="Сохранить выбор" />
+</form>
+<br />
+
+<script>
+
+    function sendCompleted(id, orderId, path) {
+        //id- id формы, с которой считать значение
+        //orderId - заказ, которому приписать значение
+        //path- путь к контроллеру, кот будет выполнять
+
+        var chbox = document.getElementById(id); //чтение значения из формы с id
+
+        let data = new FormData(); // создаем объект, содержащий данные формы
+
+        data.append("Completed", chbox.checked);
+        data.append("OrderId", orderId);
+
+        let xhr = new XMLHttpRequest();// создаем объект запроса
+        xhr.open("post", path);
+
+        xhr.onload = () => {
+            let response = JSON.parse(xhr.response);
+
+            if (response.completed == true)
+                alert(" ”Заказ " + orderId + " выполнен” " + "\n" + "сохранено ");
+            if (response.completed == false)
+                alert(" ”Заказ " + orderId + " НЕ выполнен” " + "\n" + "сохранено ");
+
+            // document.querySelector("#i").innerHTML = response.adminComment;
+        }
+
+        xhr.send(data);
+    }
+
+    function sendAdminComment(id, orderId, path) {
+        //id- id формы, с которой считать значение
+        //orderId - заказ, которому приписать значение
+        //formName- имя свойства, в которое отправляется считанное значение
+        //path- путь к контроллеру, кот будет выполнять
+
+        var field = document.getElementById(id).value; //чтение значения из формы с id
+
+        let data = new FormData(); // создаем объект, содержащий данные формы
+        //alert(chbox.checked);
+        data.append("AdminComment", field);
+        data.append("OrderId", orderId);
+
+        let xhr = new XMLHttpRequest();// создаем объект запроса
+        xhr.open("post", path);
+
+        xhr.onload = () => {
+            let response = JSON.parse(xhr.response);
+
+            alert("Комментарий" + "\n" + response.adminComment + "\n" + "сохранен в БД ");
+
+        }
+
+        xhr.send(data);
+    }
+
+    function getClientData(n) {
+        let data = new FormData(); // создаем объект, содержащий данные формы
+        data.append("Client.Email", n); //Будет передаваться в модель в свойство Client типа Client? у которого есть св-во Email
+
+        let xhr = new XMLHttpRequest();// создаем объект запроса
+        xhr.open("post", "GetClient");
+
+        xhr.onload = () => {
+            // после загрузки ответа Response
+            // парсим тело JSON ответа
+            let response = JSON.parse(xhr.response);
+
+            alert(
+                "Телефон: " + response.phone + "\n" +
+                "Имя: " + response.name + "\n" +
+                "Фамилия: " + response.secondName + "\n" +
+                "Город: " + response.city + "\n" +
+                "Улица: " + response.street + "\n" +
+                "Дом: " + response.house + "\n" +
+                "Квартира: " + response.apartament + "\n" +
+                "Индекс: " + response.ukrIndex + "\n" +
+                "Дом: " + response.npnumber + "\n"
+            );
+        }
+
+        xhr.send(data); // отправка данных формы, вместе с остальными данными запроса
+    }
+</script>
+
+
+
+@{
+
+    for (int i = 0; i < Model.ManagementOrders.Count; i++) /*Проход по заказам*/
+    {
+    <div class="order">
+        <table class="table-head">
+            <tbody>
+                <tr>
+                    <td>Выполнен</td>
+                    <td>Id заказа</td>
+                    <td>Дата</td>
+                    <td>Клиент</td>
+                    <td>Тип доставки</td>
+                    <td>Коммент клиента</td>
+                    <td>Введите коммент Магазина</td>
+                    <td>Сотрудник</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        @{string completedId = "completedId" + i; }
+                        <input id=@completedId asp-for="@Model.ManagementOrders[i].Completed" value="true"
+                               onchange="sendCompleted('@completedId' ,'@Model.ManagementOrders[i].OrderId', 'SaveCompleted')" />
+                    </td>
+                    <td>@Model.ManagementOrders[i].OrderId</td>
+                    <td>@Model.ManagementOrders[i].OrderDate</td>
+                    <td>
+                        @Model.ManagementOrders[i].ClientEmail
+
+                        <input type=button onclick="getClientData('@Model.ManagementOrders[i].ClientEmail')" value="Подробно" />
+
+                    </td>
+                    <td>@Model.ManagementOrders[i].DeliveryTypeName</td>
+                    <td>@Model.ManagementOrders[i].Comment</td>
+                    <td>
+                        @{string adminCommId = "adminComm" + i; }
+                        <input id=@adminCommId
+                               asp-for="@Model.ManagementOrders[i].AdminComment"
+                               onchange="sendAdminComment('@adminCommId' ,'@Model.ManagementOrders[i].OrderId', 'SaveAdminComment')" />  @*отправляем id формы (читать введенный текст по нему) и Id заказа, которому присвоить коммент *@
+
+                    </td>
+                    <td>@Model.ManagementOrders[i].EmployeeName &nbsp; @Model.ManagementOrders[i].EmployeeSecondName</td>
+
+                </tr>
+
+            </tbody>
+        </table>
+            <br />
+            <table class="table">
+                <tbody>
+
+                    <tr>
+                        <td>Код товара</td>
+                        <td>Изображение</td>
+                        <td>Название товара</td>
+                        <td>Кол-во</td>
+                    </tr>
+
+                    @foreach (var purchase in Model.ManagementOrders[i].ManagementPurchases)@*Проход по покупкам в заказе*@
+                    {
+
+
+                        <tr>
+                            <td>@purchase.ProductCode</td>
+                            <td>
+                                <div class="photoframeInManager">
+                                    @{if (purchase.ImgResized != null)
+                                        {
+
+                                            <img src="data:image;base64,@System.Convert.ToBase64String(purchase.ImgResized)" class="photoInManager" alt="FileName" />
+
+                                        }
+                                    }
+                                </div>
+                            </td>
+                            <td>@purchase.ProductName</td>
+                            <td>@purchase.Quantity</td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+            <br />
+            <br />
+    }
+
+}
+        

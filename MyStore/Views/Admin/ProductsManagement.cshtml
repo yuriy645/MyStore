@@ -1,0 +1,167 @@
+﻿@model ProductsManagementBindingModel
+@{
+    Layout = "_LayoutAdmin";
+}
+<div class="leftFormProductManagement">
+    <form asp-action="ProductsManagement" asp-controller="Admin" asp-protocol="https">
+
+        <label asp-for="@Model.SelectedShowAll"></label>
+        <input asp-for="@Model.SelectedShowAll" /> @*name="showAll"*@
+        &nbsp;&nbsp;&nbsp;
+
+
+        <label asp-for="SelectedSection"></label>
+        <select asp-for="SelectedSection" asp-items="Model.OptionSectionList"></select> @*name="section"*@
+        &nbsp;&nbsp;&nbsp;
+
+
+        <label asp-for="SelectedCategory"></label>
+        <select asp-for="SelectedCategory" asp-items="Model.OptionCategoryList"> </select> @*name="category"*@
+        &nbsp;&nbsp;&nbsp;
+
+        <input type="submit" value="Поиск" />
+    </form>
+</div>
+&nbsp;
+
+<div class="rightFormProductManagement">
+    <form asp-action="CreateProductForm" asp-controller="Admin" asp-protocol="https">
+
+        <b>Создать товар</b> &nbsp;
+
+        <label asp-for="SelectedSectionCreateProductForm"></label>
+        <select asp-for="SelectedSectionCreateProductForm" asp-items="Model.OptionSectionList"></select> @*name="section"*@
+        <span asp-validation-for="SelectedSection" class="text-danger"></span>
+        &nbsp;&nbsp;&nbsp;
+
+        <label asp-for="SelectedCategoryCreateProductForm"></label>
+        <select asp-for="SelectedCategoryCreateProductForm" asp-items="Model.OptionCategoryList"> </select> @*name="category"*@
+        <span asp-validation-for="SelectedSection" class="text-danger"></span>
+        &nbsp;&nbsp;&nbsp;
+
+        <label asp-for="SelectedColorCreateProductForm"></label>
+        <select class="fieldProduct" asp-for="SelectedColorCreateProductForm" asp-items="Model.OptionColorList"></select> @*name="colorName"*@
+        &nbsp;&nbsp;&nbsp;
+
+        <input type="submit" value="Создать" />
+    </form>
+
+</div>
+
+
+
+
+@{
+    if (@Model.Message != null)
+    {
+        <div class="messageProductManagement" align="right"><b><font color="red">@Model.Message</font></b></div>
+    }
+}
+
+<br />
+<br />
+
+<div align="left">
+
+    <table class="table">
+        <tr>
+            <td border="1" bordercolor="gray">Показывать</td>
+            <td>Id товара</td>
+            <td>Код</td>
+            <td>Название</td>
+            <td>Изображение</td>
+            <td>Остаток</td>
+            <td width="300">Описание</td>
+            <td>Цвет</td>
+            <td>Раздел</td>
+            <td>Категория</td>
+            <td>Цена, грн</td>
+            <td>Подробности</td>
+        </tr>
+
+
+        @if (@Model.ColoredProductsList != null)
+        {
+            @if (@Model.ColoredProductsList.Count != 0)
+            {
+                @foreach (var coloredProduct in @Model.ColoredProductsList)
+                {
+                    <tr>
+                        <td>
+                            @coloredProduct.ShowProduct
+
+                        </td>
+                        <td>@coloredProduct.ProductId</td>
+                        <td>@coloredProduct.ProductCode.PadRight(23).Substring(0, 23) </td>
+                        <td><b>@coloredProduct.ProductName</b></td>
+                        <td>
+                            <div class="photoframeInOrders">
+                                @{if (@coloredProduct.ImgResized != null)
+                                    {
+                                        <img src="data:image;base64,@System.Convert.ToBase64String(@coloredProduct.ImgResized)" class="photoInManager" alt="FileName" />
+
+                                    }
+                                }
+                            </div>
+
+                        </td>
+
+                        <td>@coloredProduct.Stock</td>
+                        <td width="300">@coloredProduct.Product.Description.PadRight(150).Substring(0, 150) ...</td>
+                        <td>
+                            @if (@coloredProduct.Color.ColorName != null)
+                            {
+                                @coloredProduct.Color.ColorName
+                            }
+                            else
+                            {
+                                <p>--</p>
+                            }
+                        </td>
+                        <td>@coloredProduct.Product.Section.SectionName</td>
+                        <td>@coloredProduct.Product.Category.CategoryName</td>
+                        <td>@coloredProduct.Price</td>
+                        <td>
+                            <form asp-controller="admin" asp-action="EditProduct" method="post">
+                                <input type="hidden" name="productId" value=@coloredProduct.ProductId />
+                                <input type="hidden" name="colorId" value=@coloredProduct.ColorId />
+                                <input type="submit" value="Редактировать" />
+                            </form>
+                            <br />
+                            <form asp-controller="admin" asp-action="DuplicateProduct" method="post">
+                                <input type="hidden" name="productId" value=@coloredProduct.ProductId />
+                                <input type="hidden" name="colorId" value=@coloredProduct.ColorId />
+
+                                <input type="hidden" name="showAll" value=@Model.SelectedShowAll />
+                                <input type="hidden" name="category" value=@Model.SelectedCategory />
+                                <input type="hidden" name="section" value=@Model.SelectedSection />
+
+                                <input type="submit" value="Дублировать" />
+                            </form>
+                            <br />
+                            <form asp-controller="admin" asp-action="DeleteProduct" method="post">
+                                <input type="hidden" name="productId" value=@coloredProduct.ProductId />
+                                <input type="hidden" name="colorId" value=@coloredProduct.ColorId />
+
+                                <input type="hidden" name="showAll" value=@Model.SelectedShowAll />
+                                <input type="hidden" name="category" value=@Model.SelectedCategory />
+                                <input type="hidden" name="section" value=@Model.SelectedSection />
+
+                                <input type="submit" value="! Удалить !" />
+                            </form>
+
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <h3>Товары не найдены.</h3>
+            }
+        }
+
+
+    </table>
+
+</div>
+

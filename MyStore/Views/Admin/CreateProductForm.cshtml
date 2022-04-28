@@ -1,0 +1,166 @@
+﻿@model CreateProductBindingModel
+@{
+    Layout = "_LayoutAdmin";
+}
+
+
+    <div class="pp1">
+        <div>
+            <h3>
+                Создание товара. <br /> <br /> Каmегория: @Model.SelectedCategoryCreateProductForm;    Раздел: @Model.SelectedSectionCreateProductForm;
+               
+            </h3>
+
+        <form asp-action="CreateProduct" asp-controller="Admin" method="post" enctype="multipart/form-data">
+
+            <div class="formProduct">
+                <label asp-for="ProductName"></label>
+                <input asp-for="ProductName" class="fieldProductName" />
+                <br /><br />
+            </div>
+            
+            
+
+            <table width="730px">
+
+                <tr>
+                    <td width="920px" align="right" colspan="2">
+
+                        <div class="formProduct">
+                            @*Изображения*@
+                            <label asp-for="Files">  </label>
+                            <input asp-for="Files" multiple /> @*name="files"*@
+                            <span asp-validation-for="Files" class="text-danger"></span>
+                            <br /> <br />
+                        </div>
+                       
+
+                    </td>
+
+                </tr>
+
+                <br />
+
+                <tr>
+                    <td width="460px" align="right">
+
+                        <div class="formProduct">
+                            @*Код товара*@
+                            <label asp-for="ProductCode"></label>
+                            <input asp-for="ProductCode" class="fieldProduct" />
+                            <br />
+                        </div>
+
+                    </td>
+                    <td width="460px" align="right">
+
+                        <div class="formProduct">
+                            @*Цена*@
+                            <label asp-for="Price"></label>
+                            <input asp-for="Price" class="fieldProduct" />
+                            <br />
+                        </div>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td width="460px" align="right">
+
+                        <div class="formProduct">
+                            @*Показывать на сайте*@
+                            <label asp-for="ShowProduct"></label>
+                            <input asp-for="ShowProduct" />
+                            <br />
+                        </div>
+                       
+
+                    </td>
+                    <td width="460px" align="right">
+
+                        <div class="formProduct">
+                            @*Остаток на складе*@
+                            <label>Остаток на складе: </label>
+                            <input asp-for="Stock" class="fieldProduct" />
+                            <br />
+                        </div>
+                        
+
+                    </td>
+
+
+            </table>
+
+            @*Описание*@
+            <label>Описание: </label>
+            <br />
+            <textarea asp-for="ColoredProduct.Product.Description" class="fieldDescription"></textarea>
+            <br />
+
+
+
+            @{ if (@Model.CategoryCharacteristicsList != null)
+                {
+
+
+                    // набор характеристик в выбранной категории
+                    var categoryCharacteristicList = @Model.CategoryCharacteristicsList; /*@Model.ColoredProduct.Product.Category.CategoryCharacteristics.ToList();*/
+
+                    <table class="table">
+                        <tr>
+                            <td style="width: 800px;"><p>Выбрать значение характеристики категории</p></td>
+                        </tr>
+
+                        @for (int i = 0; i < categoryCharacteristicList.Count; i++)@*Проход по характеристикам категории*@
+                        {
+
+                            <tr style="height: 45px;">
+
+                                <td style="width: 800px;">
+                                    @categoryCharacteristicList[i].Characteristic.CharacteristicName  @*categoryCharacteristicList[i] 1-а характеристика в выбранной категории*@
+                                    <input asp-for="CategoryCharacteristicsList[i].CategoryCharacteristicsId" name="categoryCharacteristicsIds" />
+
+
+                                    @*Вывод разделителя*@
+                                    @{ for (int j = 0; j < (43 - categoryCharacteristicList[i].Characteristic.CharacteristicName.Length); j++)
+                                        {
+                                            <span> - </span>
+                                        }
+                                    }
+
+
+                                    <select class="fieldProduct" asp-for="InputCharacteristicValues[i].Value.ValueName" name="valueNames"
+                                            asp-items="Model.OptionCharacteristicValuesList[i]"></select>
+
+
+                                </td>
+                            </tr>
+
+                        }
+                    </table>
+                    <br />
+                    <input asp-for="NewColorId" />
+                    <input asp-for="NewCategoryId" />
+                    <input asp-for="NewSectionId" />
+                    
+
+                    <input type="submit" value="Сохранить" />
+                    <br />
+
+                    if (@Model.Messages != null)
+                        @foreach (var message in @Model.Messages)
+                        {
+                            <p style="color: red;">@message</p>
+                        }
+
+                    }
+
+            }
+        </form>
+
+            
+        </div>
+
+
+    </div>
+
+

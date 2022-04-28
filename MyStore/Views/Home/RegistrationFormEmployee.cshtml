@@ -1,0 +1,44 @@
+﻿@model StoreLayoutBindingModel
+
+    <h3>Регистрация сотрудника</h3>
+
+    @{
+        if ((@Model != null) && (@Model.RegistrationEmployeeBindingModel.Message != null))
+        {
+            <p>@Model.RegistrationEmployeeBindingModel.Message</p>
+        }
+    }
+
+    <div class="registration">
+        <form asp-controller="home" asp-action="registerEmployee" method="post">
+            <label asp-for="RegistrationEmployeeBindingModel.Email"></label>
+            <input asp-for="RegistrationEmployeeBindingModel.Email" /><br />
+            <span asp-validation-for="RegistrationEmployeeBindingModel.Email" class="text-danger"></span>
+            <br />
+
+            <label asp-for="RegistrationEmployeeBindingModel.Name"></label>
+            <input asp-for="RegistrationEmployeeBindingModel.Name" /><br />
+            <span asp-validation-for="RegistrationEmployeeBindingModel.Name" class="text-danger"></span>
+            <br />
+
+            <label asp-for="RegistrationEmployeeBindingModel.SecondName"></label>
+            <input asp-for="RegistrationEmployeeBindingModel.SecondName" /><br />
+            <span asp-validation-for="RegistrationEmployeeBindingModel.SecondName" class="text-danger"></span>
+            <br />
+
+            <label asp-for="RegistrationEmployeeBindingModel.Password"></label>
+            <input asp-for="RegistrationEmployeeBindingModel.Password" /><br />
+            <span asp-validation-for="RegistrationEmployeeBindingModel.Password" class="text-danger"></span>
+            <br />
+
+            <label asp-for="RegistrationEmployeeBindingModel.PasswordConfirm"></label>
+            <input asp-for="RegistrationEmployeeBindingModel.PasswordConfirm" /><br />
+            <span asp-validation-for="RegistrationEmployeeBindingModel.PasswordConfirm" class="text-danger"></span>
+            <br />
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    
+

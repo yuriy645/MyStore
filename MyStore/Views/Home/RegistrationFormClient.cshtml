@@ -1,0 +1,84 @@
+﻿@model StoreLayoutBindingModel
+
+<h3>Регистрация</h3>
+
+@{
+    if ((@Model != null) && (@Model.RegistrationClientBindingModel.Message != null))
+    {
+        <p>@Model.RegistrationClientBindingModel.Message</p>
+    }
+}
+
+<div class="registration">
+    <form asp-controller="home" asp-action="registerClient" method="post">
+
+        <label asp-for="RegistrationClientBindingModel.Email"></label>
+        <input asp-for="RegistrationClientBindingModel.Email" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Email" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Password"></label>
+        <input asp-for="RegistrationClientBindingModel.Password" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Password" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.PasswordConfirm"></label>
+        <input asp-for="RegistrationClientBindingModel.PasswordConfirm" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.PasswordConfirm" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Phone"></label>
+        <input asp-for="RegistrationClientBindingModel.Phone" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Phone" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.DeliveryMeth"></label>
+        <input asp-for="RegistrationClientBindingModel.DeliveryMeth" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.DeliveryMeth" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Name"></label>
+        <input asp-for="RegistrationClientBindingModel.Name" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Name" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.SecondName"></label>
+        <input asp-for="RegistrationClientBindingModel.SecondName" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.SecondName" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.City"></label>
+        <input asp-for="RegistrationClientBindingModel.City" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.City" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Street"></label>
+        <input asp-for="RegistrationClientBindingModel.Street" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Street" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.House"></label>
+        <input asp-for="RegistrationClientBindingModel.House" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.House" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Apartament"></label>
+        <input asp-for="RegistrationClientBindingModel.Apartament" /><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Apartament" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.UkrIndex"></label>
+        <input asp-for="RegistrationClientBindingModel.UkrIndex"><br />
+        <span asp-validation-for="RegistrationClientBindingModel.UkrIndex" class="text-danger"></span>
+        <br />
+
+        <label asp-for="RegistrationClientBindingModel.Npnumber"></label>
+        <input asp-for="RegistrationClientBindingModel.Npnumber"><br />
+        <span asp-validation-for="RegistrationClientBindingModel.Npnumber" class="text-danger"></span>
+        <br />
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+
