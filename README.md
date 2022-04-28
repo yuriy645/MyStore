@@ -22,7 +22,8 @@ The application provides a full-fledged editor of possible characteristic values
 
 7. The site provides a nice look: with the help of CSS, the elements are arranged consistently in an ergonomic order. Provides the necessary optimization of the arrangement of elements when resizing the browser window. Simple JS functions are used for convenient user interaction. 
 
-8. 
+8. The application keeps a log of calls to all action methods. When you click the "Today's visit log" button in the admin menu, records with today's date are displayed on the page.
+
 ## Technology used 
 
 C#, ASP.NET (MVC), SQL, Entity Framework, HTML, CSS, JavaScript
