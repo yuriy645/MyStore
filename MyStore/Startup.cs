@@ -33,9 +33,9 @@ namespace MyStore
 
             services.AddSession(options =>
             {
-                options.Cookie.Name = "Client.Session"; //название кук вместо дефолтного ".AspNet.Session"
-                options.IdleTimeout = TimeSpan.FromMinutes(5); //время жизни сессии с учетом активности пользователя
-                options.Cookie.IsEssential = true; //true - куки критичны и необходимы для работы этого приложения
+                options.Cookie.Name = "Client.Session"; //Г­Г Г§ГўГ Г­ГЁГҐ ГЄГіГЄ ГўГ¬ГҐГ±ГІГ® Г¤ГҐГґГ®Г«ГІГ­Г®ГЈГ® ".AspNet.Session"
+                options.IdleTimeout = TimeSpan.FromMinutes(5); //ГўГ°ГҐГ¬Гї Г¦ГЁГ§Г­ГЁ Г±ГҐГ±Г±ГЁГЁ Г± ГіГ·ГҐГІГ®Г¬ Г ГЄГІГЁГўГ­Г®Г±ГІГЁ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї
+                options.Cookie.IsEssential = true; //true - ГЄГіГЄГЁ ГЄГ°ГЁГІГЁГ·Г­Г» ГЁ Г­ГҐГ®ГЎГµГ®Г¤ГЁГ¬Г» Г¤Г«Гї Г°Г ГЎГ®ГІГ» ГЅГІГ®ГЈГ® ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї
             });
             services.AddMemoryCache();
 
@@ -103,4 +103,4 @@ namespace MyStore
             });
         }
     }
-}
+}//
