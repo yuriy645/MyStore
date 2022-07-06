@@ -8,6 +8,14 @@ using System.Threading.Tasks;
 
 namespace MyStore.Infrastructure
 {
+    // Есть стандартные атрибуты для авторизации, свою логику для аутентификации и авторизации разрабатывать
+    // трудоемко и небезопасно. Хранить данные об авторизации в сесии тоже не правильно. Авторизация должна храниться
+    // в спецаильном зашифрованом куки, который называется тикетов, все это уже есть в готовых классах.
+    // посмотрите ASP.NET Core Identity
+
+    // Также всею логику работы с пользователями - регистрация, авторизация, выход лучше вынести в отдельный контроллер
+    // например AccountController
+
         public class AuthorizationAttribute : Attribute, IAuthorizationFilter
         {
             public void OnAuthorization(AuthorizationFilterContext context)

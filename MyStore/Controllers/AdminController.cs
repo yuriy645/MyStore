@@ -140,7 +140,16 @@ namespace MyStore.Controllers
         }
 
 
+        // У вас есть сущность Product сделайте контроллер который выводит список продуктов, удаляет и редактирует их.
+        // этот класс станет меньше, убедт отдельный контроллер и группа представлений для работы с продуктами
+        // такой же подход для работы со всеми отсальными сущностями - катоегриям, комменатриями, заказами и т.д. иногда 
+        // что то можно объеденить в один контроллер но точно не все сущности
 
+        // вы можете сделать area Admin и в этой области сделать контроллеры ProcuctController, OrdersController, CategoriesContoller
+        // у каждого контроллера будет представление Idex, Edit, Details, Delete (могут быть вариации в зависимости от спицифики сущности)
+        
+        // Практически во всех методах нет валидации, а админ может ошибиться и не заполнить обязательное поле или что то в этом духе
+        // 
         public async Task<IActionResult> ProductsManagement()
         {
             //должны быть списки
@@ -148,11 +157,15 @@ namespace MyStore.Controllers
             //и категорий
             //передаём их с помощью BindingModel
 
+            // BindingModel - это то что передается в параметы метода доступа - данные которые приходят в запросе и привязываются к параметрам
+            // то что метод доступа передает в представление для отображения называется ViewModel
+
             ProductsManagementBindingModel bindingModel = new ProductsManagementBindingModel();
             var bindingModelOptions = await _iODatabase.GetOptionNames();
 
             var bindingModelProducts = await _iODatabase.GetFilteredCatalogProducts(true,"All", "All");
 
+            // подобные действия присвоения одноименных свойств одного объекта в другой можно сделать через mapper библиотеку
             bindingModel.OptionCategoryList = bindingModelOptions.OptionCategoryList;
             bindingModel.OptionSectionList = bindingModelOptions.OptionSectionList;
             bindingModel.OptionColorList = bindingModelOptions.OptionColorList;
@@ -184,6 +197,8 @@ namespace MyStore.Controllers
 
             return View(bm);
         }
+
+        // Во все параметры можно передавать один аргумент в виде класса со свойствами, вместо отдельных аргументов
 
         [HttpPost]
         public async Task<IActionResult> DuplicateProduct(int productId, int colorId, bool showAll, string section, string category)
