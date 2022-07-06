@@ -25,6 +25,7 @@ namespace MyStore.Controllers
             _cartService = cartService;
         }
 
+        // Скорее всего этот и следующий метод нужно вынести в отдельный контроллер который будет назваться Catalog
         public async Task<IActionResult> Products(string section, string category)
         {
             StoreLayoutBindingModel storeLayoutBindingModel = new StoreLayoutBindingModel();
@@ -46,6 +47,8 @@ namespace MyStore.Controllers
 
             return View(storeLayoutBindingModel);
         }
+
+        // если на сайте есть корзина то можно сделать отдельный контроллер, котоырй будет работать с корзиной
 
         //Сюда попадаем из JS по кнопкам "Купить"
         [HttpPost]
